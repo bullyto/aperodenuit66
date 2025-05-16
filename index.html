@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Inscription Offres Spéciales</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
+
+    body {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      font-family: 'Montserrat', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      min-height: 100vh;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+    }
+
+    .container {
+      background: #1f1f38;
+      padding: 40px 30px;
+      border-radius: 12px;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    .logo {
+      max-width: 200px;
+      margin: 0 auto 25px auto;
+      display: block;
+    }
+
+    h2 {
+      margin-bottom: 25px;
+      font-weight: 600;
+      letter-spacing: 1.2px;
+      font-size: 1.2rem;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    h2 img.gift-icon {
+      width: 20px;
+      height: 20px;
+      vertical-align: middle;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+    }
+
+    label {
+      margin-bottom: 12px;
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+
+    input[type="text"],
+    input[type="tel"] {
+      padding: 12px 15px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      margin-top: 6px;
+      transition: box-shadow 0.3s ease;
+      outline: none;
+    }
+
+    input[type="text"]:focus,
+    input[type="tel"]:focus {
+      box-shadow: 0 0 8px 2px #667eea;
+    }
+
+    input[type="checkbox"] {
+      transform: scale(1.2);
+      margin-right: 10px;
+      cursor: pointer;
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      font-weight: 400;
+      font-size: 0.9rem;
+      margin-top: 15px;
+    }
+
+    button {
+      margin-top: 25px;
+      padding: 15px 0;
+      background: #667eea;
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-weight: 600;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:disabled {
+      background: #999;
+      cursor: not-allowed;
+      animation: none !important;
+    }
+
+    button:hover:not(:disabled) {
+      background: #5563c1;
+    }
+
+    @keyframes pulse-blink {
+      0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 rgba(255, 255, 255, 0);
+      }
+      50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+      }
+      100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 rgba(255, 255, 255, 0);
+      }
+    }
+
+    #submitBtn {
+      animation: pulse-blink 2s infinite;
+    }
+
+    .message {
+      margin-top: 20px;
+      font-weight: 600;
+      text-align: center;
+      color: #a5f3a5;
+    }
+
+    .error {
+      color: #ff6b6b;
+      font-size: 0.85rem;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <img src="https://static.wixstatic.com/media/bc6106_2760d0ad9fe847418ba1d73666102706~mv2.png/v1/fill/w_560,h_320,al_c,lg_1,q_85,enc_avif,quality_auto/apero%20de%20nuit%20n.png" alt="Logo" class="logo" />
+
+    <h2>
+      <img src="https://i.postimg.cc/t479jmxL/1000001338.png" alt="cadeau" class="gift-icon" />
+      Recevez nos offres spéciales
+      <img src="https://i.postimg.cc/t479jmxL/1000001338.png" alt="cadeau" class="gift-icon" />
+    </h2>
+
+    <form id="inscriptionForm" action="https://formsubmit.co/bullyto88220@gmail.com" method="POST" novalidate>
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_template" value="table">
+      <input type="hidden" name="_next" value="https://www.aperodenuit.com">
+
+      <label for="nom"> </label>
+      <input type="text" id="nom" name="nom" required placeholder="Votre nom" />
+
+      <label for="tel"> </label>
+      <input type="tel" id="tel" name="tel" pattern="^0[67][0-9]{8}$" placeholder="Ex : 0612345678" required />
+      <div id="telError" class="error" style="display:none;">Numéro invalide. Commence par 06 ou 07 et contient 10 chiffres.</div>
+
+      <label class="checkbox-label">
+        <input type="checkbox" id="consentement" name="consentement" required checked />
+        J'accepte de recevoir des offres commerciales par SMS. Je peux me désinscrire à tout moment.
+      </label>
+
+      <button type="submit" id="submitBtn">S'inscrire</button>
+    </form>
+
+    <div id="message" class="message"></div>
+  </div>
+
+  <script>
+    const form = document.getElementById('inscriptionForm');
+    const telInput = document.getElementById('tel');
+    const telError = document.getElementById('telError');
+    const consentement = document.getElementById('consentement');
+    const submitBtn = document.getElementById('submitBtn');
+    const messageDiv = document.getElementById('message');
+
+    consentement.addEventListener('change', () => {
+      submitBtn.disabled = !consentement.checked;
+    });
+
+    telInput.addEventListener('input', () => {
+      const regex = /^0[67][0-9]{8}$/;
+      if (telInput.value.match(regex)) {
+        telError.style.display = 'none';
+        telInput.setCustomValidity('');
+      } else {
+        telError.style.display = 'block';
+        telInput.setCustomValidity('Numéro invalide');
+      }
+    });
+
+    form.addEventListener('submit', () => {
+      messageDiv.style.color = '#a5f3a5';
+      messageDiv.textContent = 'Merci pour votre inscription ! Vous recevrez bientôt nos offres.';
+    });
+  </script>
+
+</body>
+</html>
