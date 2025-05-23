@@ -172,7 +172,7 @@
 
       <label for="tel"> </label>
       <input type="tel" id="tel" name="tel" pattern="^0[67][0-9]{8}$" placeholder="Ex : 0612345678" required />
-      <div id="telError" class="error" style="display:none;">Numéro invalide. Commence par 06 ou 07 et contient 10 chiffres.</div>
+      <div id="telError" class="error" style="display:none;">Numéro invalide</div>
 
       <label class="checkbox-label">
         <input type="checkbox" id="consentement" name="consentement" required checked />
@@ -192,6 +192,13 @@
     const consentement = document.getElementById('consentement');
     const submitBtn = document.getElementById('submitBtn');
     const messageDiv = document.getElementById('message');
+    const nomInput = document.getElementById('nom');
+
+    // Créer une div pour afficher l'erreur du nom
+    const nomError = document.createElement('div');
+    nomError.classList.add('error');
+    nomError.style.display = 'none';
+    nomInput.insertAdjacentElement('afterend', nomError);
 
     consentement.addEventListener('change', () => {
       submitBtn.disabled = !consentement.checked;
@@ -199,7 +206,7 @@
 
     telInput.addEventListener('input', () => {
       const regex = /^0[67][0-9]{8}$/;
-      if (telInput.value.match(regex)) {
+      if (regex.test(telInput.value)) {
         telError.style.display = 'none';
         telInput.setCustomValidity('');
       } else {
@@ -208,7 +215,49 @@
       }
     });
 
-    form.addEventListener('submit', () => {
+    nomInput.addEventListener('input', () => {
+      const value = nomInput.value.trim().toLowerCase();
+      const hasMinLength = value.length >= 4;
+      const hasVowel = /[aeiouy]/.test(value);
+      if (hasMinLength && hasVowel) {
+        nomError.style.display = 'none';
+        nomInput.setCustomValidity('');
+      } else {
+        nomError.textContent = "Nom invalide";
+        nomError.style.display = 'block';
+        nomInput.setCustomValidity("Nom invalide");
+      }
+    });
+
+    form.addEventListener('submit', (e) => {
+      // Forcer la validation des deux champs au moment de la soumission
+      const telValid = /^0[67][0-9]{8}$/.test(telInput.value);
+      const nomValue = nomInput.value.trim().toLowerCase();
+      const nomValid = nomValue.length >= 4 && /[aeiouy]/.test(nomValue);
+
+      if (!telValid) {
+        telError.style.display = 'block';
+        telInput.setCustomValidity('Numéro invalide');
+      } else {
+        telError.style.display = 'none';
+        telInput.setCustomValidity('');
+      }
+
+      if (!nomValid) {
+        nomError.textContent = "Nom invalide";
+        nomError.style.display = 'block';
+        nomInput.setCustomValidity("Nom invalide");
+      } else {
+        nomError.style.display = 'none';
+        nomInput.setCustomValidity('');
+      }
+
+      if (!form.checkValidity()) {
+        e.preventDefault();
+        messageDiv.textContent = '';
+        return;
+      }
+
       messageDiv.style.color = '#a5f3a5';
       messageDiv.textContent = 'Merci pour votre inscription ! Vous recevrez bientôt nos offres.';
     });
